@@ -26,10 +26,10 @@ contract AccessControlContract is ERC721, Ownable {
     mapping(string => string) private _ipfsPaths;
     // mapping from content Name to price you need to pay when minting
     mapping(string => uint256) private _prices;
-    // mapping from tokenId to address by whom actually have content's ownership
-    mapping(uint256 => address) private _ownershipGrantedAddresses;
-    // mapping from content Name to mapping from address to the number of ownerships.
-    mapping(string => mapping(address => uint256)) private ownerships;
+    // mapping from tokenId to address by whom actually have content's accessRight
+    mapping(uint256 => address) private _accessRightGrantedAddresses;
+    // mapping from content Name to mapping from address to the number of accessRights.
+    mapping(string => mapping(address => uint256)) private accessRights;
 
     constructor(string memory name_, string memory symbol_)
     ERC721(name_, symbol_)
@@ -53,7 +53,7 @@ contract AccessControlContract is ERC721, Ownable {
     }
 
     function register(uint256 price, string memory contentName, string memory merkleRoot, string memory path) public {
-        require(_authors[contentName] != address(0), "The content has already registered");
+        require(_authors[contentName] == address(0), "The content has already registered");
         _authors[contentName] = msg.sender;
 
         if(price != 0) {
@@ -121,8 +121,8 @@ contract AccessControlContract is ERC721, Ownable {
         baseURIextended = baseURI_;
     }
 
-    function hasOwnership(address account, string memory contentName) public view returns(bool) {
-        return ownerships[contentName][account] != 0 || _authors[contentName] == account;
+    function hasAccessRight(address account, string memory contentName) public view returns(bool) {
+        return accessRights[contentName][account] != 0 || _authors[contentName] == account;
     }
 
     function contentNameOf(uint256 tokenId) public view returns (string memory) {
@@ -172,11 +172,11 @@ contract AccessControlContract is ERC721, Ownable {
         uint256 tokenId
     ) internal override {
         if(from != address(0)) {
-            ownerships[_contents[tokenId]][_ownershipGrantedAddresses[tokenId]] -= 1;
+            accessRights[_contents[tokenId]][_accessRightGrantedAddresses[tokenId]] -= 1;
         }
         if(to != address(0)) {
-            _ownershipGrantedAddresses[tokenId] = to;
-            ownerships[_contents[tokenId]][to] += 1;
+            _accessRightGrantedAddresses[tokenId] = to;
+            accessRights[_contents[tokenId]][to] += 1;
         }
     }
 }
