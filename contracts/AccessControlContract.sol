@@ -41,7 +41,8 @@ contract AccessControlContract is ERC721, Ownable {
     }
 
     function register(uint256 price, string memory contentName, string memory merkleRoot) public {
-        require(_authors[contentName] == address(0), "The content has already registered");
+        require(bytes(_contentMerkleRoots[contentName]).length == 0);
+        require(bytes(merkleRoot).length != 0);
         _authors[contentName] = msg.sender;
         _prices[contentName] = price;
         _contentMerkleRoots[contentName] = merkleRoot;

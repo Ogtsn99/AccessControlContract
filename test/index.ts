@@ -20,7 +20,7 @@ describe("ARC", function () {
   });
   
   it("Should success register", async function () {
-    await art.connect(author).functions["register(uint256,string,string)"](1, "test", "test");
+    await art.connect(author).register(1, "test", "test");
     let title = await art.functions.authorOf("test");
     assert.isTrue((await art.functions.hasAccessRight(await author.getAddress(), "test"))[0]);
   })
