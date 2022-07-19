@@ -22,8 +22,6 @@ contract AccessControlContract is ERC721, Ownable {
     // どうしてハッシュをipfsに記録しないか -> ぶっちゃけIPFSに保存しても良い
     // スピードの問題。ガス代はかかるが、ハッシュを取ってくるのに時間をあまりかけたくないと思ったため。
     mapping(string => string) private _contentMerkleRoots;
-    // mapping from content Name to ipfsPath
-    mapping(string => string) private _ipfsPaths;
     // mapping from content Name to price you need to pay when minting
     mapping(string => uint256) private _prices;
     // mapping from tokenId to address by whom actually have content's accessRight
@@ -42,54 +40,21 @@ contract AccessControlContract is ERC721, Ownable {
         return ERC721.supportsInterface(interfaceId);
     }
 
-    event Register(address indexed author, string indexed contentName);
-    event SetPrice(string indexed contentName, uint256 price);
-    event SetRoyalty(string indexed contentName, uint256 royalty, address receiver);
-    event SetContentMerkleRoot(string indexed contentName, string merkleRoot);
-    event SetIpfsPath(string indexed contentName, string path);
-
     function register(uint256 price, string memory contentName, string memory merkleRoot) public {
-        register(price, contentName, merkleRoot, "");
-    }
-
-    function register(uint256 price, string memory contentName, string memory merkleRoot, string memory path) public {
         require(_authors[contentName] == address(0), "The content has already registered");
         _authors[contentName] = msg.sender;
-
-        if(price != 0) {
-            _prices[contentName] = price;
-            emit SetPrice(contentName, price);
-        }
-
-        if(bytes(merkleRoot).length != 0) {
-            _contentMerkleRoots[contentName] = merkleRoot;
-            emit SetContentMerkleRoot(contentName, merkleRoot);
-        }
-
-        if(bytes(path).length != 0) {
-            _ipfsPaths[contentName] = path;
-            emit SetIpfsPath(contentName, path);
-        }
-
-        emit Register(msg.sender, contentName);
+        _prices[contentName] = price;
+        _contentMerkleRoots[contentName] = merkleRoot;
     }
 
-    function setPrice(string memory conetntName, uint256 price) public {
-        require(msg.sender == _authors[conetntName], "you are not the author");
-        _prices[conetntName] = price;
-        emit SetPrice(conetntName, price);
+    function setPrice(string memory contentName, uint256 price) public {
+        require(msg.sender == _authors[contentName], "you are not the author");
+        _prices[contentName] = price;
     }
 
     function setContentMerkleRoot(string memory contentName, string memory merkleRoot) public {
         require(msg.sender == _authors[contentName], "you are not the author");
         _contentMerkleRoots[contentName] = merkleRoot;
-        emit SetContentMerkleRoot(contentName, merkleRoot);
-    }
-
-    function setIpfsPath(string memory contentName, string memory path) public {
-        require(msg.sender == _authors[contentName], "you are not the author");
-        _ipfsPaths[contentName] = path;
-        emit SetIpfsPath(contentName, path);
     }
 
     /// @notice Mint one token to `to`
@@ -99,7 +64,6 @@ contract AccessControlContract is ERC721, Ownable {
         string memory contentName,
         address to
     ) payable external {
-
         bool isAuthor = _authors[contentName] == msg.sender;
         require(_prices[contentName] == msg.value || isAuthor,
             "you are not the author and msg.value is not equal to the price");
@@ -115,10 +79,6 @@ contract AccessControlContract is ERC721, Ownable {
         _safeMint(to, tokenId, '');
 
         nextTokenId = tokenId + 1;
-    }
-
-    function setBaseURI(string memory baseURI_) public onlyOwner() {
-        baseURIextended = baseURI_;
     }
 
     function hasAccessRight(address account, string memory contentName) public view returns(bool) {
@@ -140,30 +100,6 @@ contract AccessControlContract is ERC721, Ownable {
 
     function merkleRootOf(string memory contentName) public view returns (string memory) {
         return _contentMerkleRoots[contentName];
-    }
-
-    function ipfsPathOf(string memory contentName) public view returns (string memory) {
-        return _ipfsPaths[contentName];
-    }
-
-    function contentURI(string memory contentName) public view returns (string memory) {
-        string memory baseURI = _baseURI();
-        return bytes(_ipfsPaths[contentName]).length > 0 ? string(abi.encodePacked(baseURI, _ipfsPaths[contentName])) : "";
-    }
-
-    /**
-     * @dev See {IERC721Metadata-tokenURI}.
-     */
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
-
-        string memory baseURI = _baseURI();
-
-        return bytes(baseURI).length > 0 ? string(abi.encodePacked(baseURI, _ipfsPaths[_contents[tokenId]])) : "";
-    }
-
-    function _baseURI() internal view override returns (string memory) {
-        return baseURIextended;
     }
 
     function _beforeTokenTransfer(
