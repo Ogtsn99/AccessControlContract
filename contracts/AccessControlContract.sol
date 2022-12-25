@@ -9,13 +9,10 @@ import "hardhat/console.sol";
 contract AccessControlContract is ERC721, Ownable {
     using Strings for uint256;
 
-    string public baseURIextended;
+    // contentName is used as ids. All of them should be unique
     uint256 public nextTokenId;
-
-    // mapping from content Id to author address
+    // mapping from contentName to author address
     mapping(string => address) private _authors;
-    // mapping from content Name to token Id.
-    //mapping(uint256 => uint256[]) private _tokens;
     // mapping from token Id to content Name
     mapping(uint256 => string) private _contents;
     // mapping from contentName to content SHA256 merkleRoot
@@ -26,8 +23,8 @@ contract AccessControlContract is ERC721, Ownable {
     mapping(string => uint256) private _prices;
     // mapping from tokenId to address by whom actually have content's accessRight
     mapping(uint256 => address) private _accessRightGrantedAddresses;
-    // mapping from content Name to mapping from address to the number of accessRights.
-    mapping(string => mapping(address => uint256)) private accessRights;
+    // mapping from content Name to mapping from address to the number of _accessRights.
+    mapping(string => mapping(address => uint256)) private _accessRights;
 
     constructor(string memory name_, string memory symbol_)
     ERC721(name_, symbol_)
@@ -42,7 +39,6 @@ contract AccessControlContract is ERC721, Ownable {
 
     function register(uint256 price, string memory contentName, string memory merkleRoot) public {
         require(bytes(_contentMerkleRoots[contentName]).length == 0);
-        require(bytes(merkleRoot).length != 0);
         _authors[contentName] = msg.sender;
         _prices[contentName] = price;
         _contentMerkleRoots[contentName] = merkleRoot;
@@ -65,25 +61,15 @@ contract AccessControlContract is ERC721, Ownable {
         string memory contentName,
         address to
     ) payable external {
-        bool isAuthor = _authors[contentName] == msg.sender;
-        require(_prices[contentName] == msg.value || isAuthor,
-            "you are not the author and msg.value is not equal to the price");
-
-        if(!isAuthor) {
-            payable(_authors[contentName]).transfer(msg.value);
-        }
-
-        uint256 tokenId = nextTokenId;
-
-        _contents[tokenId] = contentName;
-
-        _safeMint(to, tokenId, '');
-
-        nextTokenId = tokenId + 1;
+        require(_prices[contentName] == msg.value);
+        payable(_authors[contentName]).transfer(msg.value);
+        _contents[nextTokenId] = contentName;
+        _safeMint(to, nextTokenId, '');
+        nextTokenId++;
     }
 
     function hasAccessRight(address account, string memory contentName) public view returns(bool) {
-        return accessRights[contentName][account] != 0 || _authors[contentName] == account;
+        return _accessRights[contentName][account] != 0 || _authors[contentName] == account;
     }
 
     function contentNameOf(uint256 tokenId) public view returns (string memory) {
@@ -109,11 +95,11 @@ contract AccessControlContract is ERC721, Ownable {
         uint256 tokenId
     ) internal override {
         if(from != address(0)) {
-            accessRights[_contents[tokenId]][_accessRightGrantedAddresses[tokenId]] -= 1;
+            _accessRights[_contents[tokenId]][_accessRightGrantedAddresses[tokenId]] -= 1;
         }
         if(to != address(0)) {
             _accessRightGrantedAddresses[tokenId] = to;
-            accessRights[_contents[tokenId]][to] += 1;
+            _accessRights[_contents[tokenId]][to] += 1;
         }
     }
 }
