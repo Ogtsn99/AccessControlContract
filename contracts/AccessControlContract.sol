@@ -25,6 +25,10 @@ contract AccessControlContract is ERC721, Ownable {
     mapping(uint256 => address) private _accessRightGrantedAddresses;
     // mapping from content Name to mapping from address to the number of _accessRights.
     mapping(string => mapping(address => uint256)) private _accessRights;
+    // mapping from groupId to number of active nodes 1 indexed
+    mapping(uint256 => uint256) private _groupNodeCounter;
+    // mapping from address to group assigned 1 indexed
+    mapping(address => uint256) private _groups;
 
     constructor(string memory name_, string memory symbol_)
     ERC721(name_, symbol_)
@@ -87,6 +91,26 @@ contract AccessControlContract is ERC721, Ownable {
 
     function merkleRootOf(string memory contentName) public view returns (string memory) {
         return _contentMerkleRoots[contentName];
+    }
+
+    // TODO: 未定だけど登録に仮想通貨の支払いを必要にする可能性
+    function node_register() public {
+        require(_groups[msg.sender] == 0);
+        uint group = 0;
+        uint mi = 1000000007;
+        for (uint i=1; i<=40; i++) {
+            if (mi > _groupNodeCounter[i]) {
+                mi = _groupNodeCounter[i];
+                group = i;
+            }
+        }
+        _groupNodeCounter[group] += 1;
+        _groups[msg.sender] = group;
+    }
+
+    // 1-indexedで帰ってくる。登録されていない場合は0が帰る
+    function get_group(address account) public view returns (uint) {
+        return _groups[account];
     }
 
     function _beforeTokenTransfer(
