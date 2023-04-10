@@ -26,11 +26,13 @@ describe("ARC", function () {
   })
 
   it('can register node', async function () {
-    await art.connect(provider).functions.node_register();
-    let group = await art.functions.get_group(await provider.getAddress());
+    let next = await art.connect(provider).functions.next_group();
+    await art.connect(provider).functions.registerNode("peer_id");
+    let group = await art.functions.get_group("peer_id");
     assert.equal(group.toString(), "1");
-
-    await art.connect(provider2).functions.node_register();
-    assert.equal((await art.functions.get_group(await provider2.getAddress())).toString(), "2");
+  
+    await art.connect(provider2).functions.registerNode( "peer_id2");
+    group = await art.functions.get_group("peer_id2");
+    assert.equal(group.toString(), "2");
   });
 });
