@@ -28,7 +28,9 @@ contract AccessControlContract is ERC721, Ownable {
     // mapping from groupId to number of active nodes 1 indexed
     mapping(uint256 => uint256) private _groupNodeCounter;
     // mapping from address to group assigned 1 indexed
-    mapping(address => uint256) private _groups;
+    mapping(string => uint256) private _groups;
+    mapping(address => string) private _account_peer_id_map;
+    mapping(string => address) private _peer_id_account_map;
 
     constructor(string memory name_, string memory symbol_)
     ERC721(name_, symbol_)
@@ -93,9 +95,29 @@ contract AccessControlContract is ERC721, Ownable {
         return _contentMerkleRoots[contentName];
     }
 
-    // TODO: 未定だけど登録に仮想通貨の支払いを必要にする可能性
-    function node_register() public {
-        require(_groups[msg.sender] == 0);
+    // TODO: 未定だけど登録に仮想通貨の支払いを必要にする可能性？
+    // 同じpeer_idが存在しないようにしたい
+    function registerNode(string memory peer_id) public {
+        require(_groups[peer_id] == 0, "This peer is already used.");
+        uint group = next_group();
+        group = next_group();
+        _groupNodeCounter[group] += 1;
+        _groups[peer_id] = group;
+        require(_peer_id_account_map[peer_id] == address(0));
+        _peer_id_account_map[peer_id] = msg.sender;
+        _account_peer_id_map[msg.sender] = peer_id;
+    }
+
+    function leaveNode() public {
+        string memory peer_id = _account_peer_id_map[msg.sender];
+        uint group = _groups[peer_id];
+        _groups[peer_id] = 0;
+        _groupNodeCounter[group] -= 1;
+        _peer_id_account_map[peer_id] = address(0);
+        _account_peer_id_map[msg.sender] = "";
+    }
+
+    function next_group() public view returns (uint) {
         uint group = 0;
         uint mi = 1000000007;
         for (uint i=1; i<=40; i++) {
@@ -104,13 +126,12 @@ contract AccessControlContract is ERC721, Ownable {
                 group = i;
             }
         }
-        _groupNodeCounter[group] += 1;
-        _groups[msg.sender] = group;
+        return group;
     }
 
     // 1-indexedで帰ってくる。登録されていない場合は0が帰る
-    function get_group(address account) public view returns (uint) {
-        return _groups[account];
+    function get_group(string memory peer_id) public view returns (uint) {
+        return _groups[peer_id];
     }
 
     function _beforeTokenTransfer(

@@ -23,6 +23,8 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.6.0"
+    "@openzeppelin/contracts": "^4.6.0",
+    "crypt": "^0.0.2",
+    "crypto": "^1.0.1"
   }
 }
