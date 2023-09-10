@@ -31,6 +31,7 @@ contract AccessControlContract is ERC721, Ownable {
     mapping(string => uint256) private _groups;
     mapping(address => string) private _account_peer_id_map;
     mapping(string => address) private _peer_id_account_map;
+    string[] private _content_title_list;
 
     constructor(string memory name_, string memory symbol_)
     ERC721(name_, symbol_)
@@ -48,6 +49,7 @@ contract AccessControlContract is ERC721, Ownable {
         _authors[contentName] = msg.sender;
         _prices[contentName] = price;
         _contentMerkleRoots[contentName] = merkleRoot;
+        _content_title_list.push(contentName);
     }
 
     function setPrice(string memory contentName, uint256 price) public {
