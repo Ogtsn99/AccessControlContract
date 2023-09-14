@@ -5,6 +5,7 @@ import '@openzeppelin/contracts/token/ERC721/ERC721.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 
 import "hardhat/console.sol";
+import "./DBookToken.sol";
 
 contract AccessControlContract is ERC721, Ownable {
     using Strings for uint256;
@@ -32,10 +33,21 @@ contract AccessControlContract is ERC721, Ownable {
     mapping(address => string) private _account_peer_id_map;
     mapping(string => address) private _peer_id_account_map;
     string[] private _content_title_list;
+    DBookToken dbt;
 
     constructor(string memory name_, string memory symbol_)
     ERC721(name_, symbol_)
     {}
+
+    function setDBookToken(address _dbt) public {
+        require(msg.sender == Ownable.owner());
+        dbt = DBookToken(_dbt);
+    }
+
+    // テスト用
+    function mintDBT() public {
+        dbt.mint(msg.sender, 114514);
+    }
 
     /// @inheritdoc	ERC165
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721)
@@ -110,6 +122,16 @@ contract AccessControlContract is ERC721, Ownable {
         _account_peer_id_map[msg.sender] = peer_id;
     }
 
+    // テスト用
+    function forceDispatchNodeForTesting(string memory peer_id, uint group) public {
+        require(_groups[peer_id] == 0, "This peer is already used.");
+        _groupNodeCounter[group] += 1;
+        _groups[peer_id] = group;
+        require(_peer_id_account_map[peer_id] == address(0));
+        _peer_id_account_map[peer_id] = msg.sender;
+        _account_peer_id_map[msg.sender] = peer_id;
+    }
+
     function leaveNode() public {
         string memory peer_id = _account_peer_id_map[msg.sender];
         uint group = _groups[peer_id];
@@ -148,5 +170,71 @@ contract AccessControlContract is ERC721, Ownable {
             _accessRightGrantedAddresses[tokenId] = to;
             _accessRights[_contents[tokenId]][to] += 1;
         }
+    }
+
+    // 以下、インセンティブシステム用
+    mapping(uint=>mapping(uint=>mapping(bytes32=>bool))) private _is_encrypted_answer_exist;
+    mapping(uint=>mapping(uint=>mapping(address=>uint))) private _deposits;
+    mapping(uint=>mapping(uint=>mapping(address=>bytes32))) private _answers;
+    mapping(uint=>mapping(uint=>mapping(bytes32=>uint))) private _answer_counts;
+    mapping(uint=>mapping(uint=>bytes32[])) private _answers_lists;
+    // block.numberを変える方法がわからないので仮想block.numberを使う
+    uint public v_block_num = 0;
+
+    function set_virtual_block_num(uint block_num) public {
+        v_block_num = block_num;
+    }
+
+    function vote(bytes32 encrypted_answer) payable public {
+        require(v_block_num % 300 < 100, "Out of voting period.");
+        uint id = v_block_num / 300;
+        uint group = _groups[_account_peer_id_map[msg.sender]];
+        require(group > 0, "This node is not registered.");
+        require(_is_encrypted_answer_exist[id][group][encrypted_answer] == false);
+        _is_encrypted_answer_exist[id][group][encrypted_answer] = true;
+        require(msg.value != 0 && _deposits[id][group][msg.sender] == 0);
+        _deposits[id][group][msg.sender] = msg.value;
+    }
+
+    function disclosure(bytes32 answer, bytes32 key) public {
+        uint id = v_block_num / 300;
+        uint group = _groups[_account_peer_id_map[msg.sender]];
+        require((v_block_num % 300) >= 100 && (v_block_num % 300) < 200, "Out of disclosure period.");
+        require(_is_encrypted_answer_exist[id][group][keccak256(abi.encode(answer, key))], "invalid answer and key");
+        _answers[id][group][msg.sender] = answer;
+        _answer_counts[id][group][answer] += 1;
+        if (_answer_counts[id][group][answer] == 1) {
+            _answers_lists[id][group].push(answer);
+        }
+    }
+
+    function claim() public {
+        uint id = v_block_num / 300;
+        uint group = _groups[_account_peer_id_map[msg.sender]];
+        require((v_block_num % 300) >= 200 && (v_block_num % 300) < 300, "Out of disclosure period.");
+        uint ma = 0;
+        for (uint i=0; i<_answers_lists[id][group].length; i++) {
+            if (ma < _answer_counts[id][group][_answers_lists[id][group][i]]) {
+                ma = _answer_counts[id][group][_answers_lists[id][group][i]];
+            }
+        }
+        bytes32 correct = 0;
+        for (uint i=0; i<_answers_lists[id][group].length; i++) {
+            if (ma == _answer_counts[id][group][_answers_lists[id][group][i]]) {
+                require(correct == 0, "No correct answer");
+                correct = _answers_lists[id][group][i];
+            }
+        }
+        require(correct == _answers[id][group][msg.sender], "Your answer is wrong");
+        dbt.mint(msg.sender, _deposits[id][group][msg.sender] * 1000);
+        _deposits[id][group][msg.sender] = 0;
+    }
+
+    // 動作確認用
+    function is_encrypted_answer_exist(uint block_num, bytes32 encrypted_answer, uint group) public view returns (bool) {
+        return _is_encrypted_answer_exist[block_num / 300][group][encrypted_answer];
+    }
+    function get_answer_counts(uint block_num, uint group, bytes32 answer) public view returns (uint) {
+        return _answer_counts[block_num / 300][group][answer];
     }
 }
