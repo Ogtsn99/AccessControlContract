@@ -20,6 +20,11 @@ async function main() {
   const acc = await AccessControlContract.deploy("AccessRightToken", "ART");
   
   await acc.deployed();
+  const DBookToken = await ethers.getContractFactory("DBookToken");
+  const dbt = await DBookToken.deploy("DBookToken", "DBT", acc.address);
+  await dbt.deployed();
+  await acc.functions.setDBookToken(dbt.address);
+
   console.log(acc.address);
   
   let [signers1, signers2] = await ethers.getSigners();
