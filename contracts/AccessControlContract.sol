@@ -33,6 +33,7 @@ contract AccessControlContract is ERC721, Ownable {
     mapping(address => string) private _account_peer_id_map;
     mapping(string => address) private _peer_id_account_map;
     string[] private _content_title_list;
+    uint256 public registration_fee = 10000;
     DBookToken dbt;
 
     constructor(string memory name_, string memory symbol_)
@@ -111,8 +112,9 @@ contract AccessControlContract is ERC721, Ownable {
 
     // TODO: 未定だけど登録に仮想通貨の支払いを必要にする可能性？
     // 同じpeer_idが存在しないようにしたい
-    function registerNode(string memory peer_id) public {
+    function registerNode(string memory peer_id) payable public {
         require(_groups[peer_id] == 0, "This peer is already used.");
+        require(msg.value == registration_fee, "Registration fee is required.");
         uint group = next_group();
         group = next_group();
         _groupNodeCounter[group] += 1;
@@ -135,10 +137,12 @@ contract AccessControlContract is ERC721, Ownable {
     function leaveNode() public {
         string memory peer_id = _account_peer_id_map[msg.sender];
         uint group = _groups[peer_id];
+        require(group != 0, "This peer_id is not registered.");
         _groups[peer_id] = 0;
         _groupNodeCounter[group] -= 1;
         _peer_id_account_map[peer_id] = address(0);
         _account_peer_id_map[msg.sender] = "";
+        payable(msg.sender).transfer(registration_fee);
     }
 
     function next_group() public view returns (uint) {
