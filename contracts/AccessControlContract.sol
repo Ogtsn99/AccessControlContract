@@ -22,8 +22,6 @@ contract AccessControlContract is ERC721, Ownable {
     mapping(string => string) private _contentMerkleRoots;
     // mapping from content Name to price you need to pay when minting
     mapping(string => uint256) private _prices;
-    // mapping from tokenId to address by whom actually have content's accessRight
-    mapping(uint256 => address) private _accessRightGrantedAddresses;
     // mapping from content Name to mapping from address to the number of _accessRights.
     mapping(string => mapping(address => uint256)) private _accessRights;
     // mapping from groupId to number of active nodes 1 indexed
@@ -163,9 +161,8 @@ contract AccessControlContract is ERC721, Ownable {
         uint256 tokenId
     ) internal override {
         if(from != address(0)) {
-            _accessRights[_contents[tokenId]][_accessRightGrantedAddresses[tokenId]]--;
+            _accessRights[_contents[tokenId]][from]--;
         }
-        _accessRightGrantedAddresses[tokenId] = to;
         _accessRights[_contents[tokenId]][to]++;
     }
 
