@@ -57,12 +57,12 @@ contract AccessControlContract is ERC721, Ownable {
         return ERC721.supportsInterface(interfaceId);
     }
 
-    function register(uint256 price, string memory contentName, string memory merkleRoot) public {
-        require(bytes(_contentMerkleRoots[contentName]).length == 0);
-        _authors[contentName] = msg.sender;
-        _prices[contentName] = price;
-        _contentMerkleRoots[contentName] = merkleRoot;
-        _content_title_list.push(contentName);
+    function register(uint256 price, string memory title, string memory merkleRoot) public {
+        require(bytes(_contentMerkleRoots[title]).length == 0);
+        _authors[title] = msg.sender;
+        _prices[title] = price;
+        _contentMerkleRoots[title] = merkleRoot;
+        _content_title_list.push(title);
     }
 
     function setPrice(string memory contentName, uint256 price) public {
@@ -75,22 +75,16 @@ contract AccessControlContract is ERC721, Ownable {
         _contentMerkleRoots[contentName] = merkleRoot;
     }
 
-    /// @notice Mint one token to `to`
-    /// @param contentName an id of the content
-    /// @param to the recipient of the token
-    function mint(
-        string memory contentName,
-        address to
-    ) payable external {
-        require(_prices[contentName] == msg.value);
-        payable(_authors[contentName]).transfer(msg.value);
-        _contents[nextTokenId] = contentName;
+    function mint(string memory title, address to) payable external {
+        require(_prices[title] == msg.value);
+        payable(_authors[title]).transfer(msg.value);
+        _contents[nextTokenId] = title;
         _safeMint(to, nextTokenId, '');
         nextTokenId++;
     }
 
-    function hasAccessRight(address account, string memory contentName) public view returns(bool) {
-        return _accessRights[contentName][account] != 0 || _authors[contentName] == account;
+    function hasAccessRight(address account, string memory title) public view returns(bool) {
+        return _accessRights[title][account] != 0 || _authors[title] == account;
     }
 
     function contentNameOf(uint256 tokenId) public view returns (string memory) {
@@ -162,18 +156,17 @@ contract AccessControlContract is ERC721, Ownable {
         return _groups[peer_id];
     }
 
+// This function is called when minting.
     function _beforeTokenTransfer(
         address from,
         address to,
         uint256 tokenId
     ) internal override {
         if(from != address(0)) {
-            _accessRights[_contents[tokenId]][_accessRightGrantedAddresses[tokenId]] -= 1;
+            _accessRights[_contents[tokenId]][_accessRightGrantedAddresses[tokenId]]--;
         }
-        if(to != address(0)) {
-            _accessRightGrantedAddresses[tokenId] = to;
-            _accessRights[_contents[tokenId]][to] += 1;
-        }
+        _accessRightGrantedAddresses[tokenId] = to;
+        _accessRights[_contents[tokenId]][to]++;
     }
 
     // 以下、インセンティブシステム用
