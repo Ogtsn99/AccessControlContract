@@ -32,6 +32,7 @@ contract AccessControlContract is ERC721, Ownable {
     mapping(string => address) private _peer_id_account_map;
     string[] private _content_title_list;
     uint256 public registration_fee = 10000;
+    uint public event_length = 300;
     DBookToken dbt;
 
     constructor(string memory name_, string memory symbol_)
@@ -158,20 +159,18 @@ contract AccessControlContract is ERC721, Ownable {
     function _beforeTokenTransfer(
         address from,
         address to,
-        uint256 tokenId
+        uint tokenId
     ) internal override {
-        if(from != address(0)) {
-            _accessRights[_contents[tokenId]][from]--;
-        }
+        if(from != address(0)) _accessRights[_contents[tokenId]][from]--;
         _accessRights[_contents[tokenId]][to]++;
     }
 
     // 以下、インセンティブシステム用
-    mapping(uint=>mapping(uint=>mapping(bytes32=>bool))) private _is_encrypted_answer_exist;
+    mapping(uint=>mapping(uint=>mapping(bytes32=>bool))) private encrypted_answer_exists;
     mapping(uint=>mapping(uint=>mapping(address=>uint))) private _deposits;
     mapping(uint=>mapping(uint=>mapping(address=>bytes32))) private _answers;
     mapping(uint=>mapping(uint=>mapping(bytes32=>uint))) private _answer_counts;
-    mapping(uint=>mapping(uint=>bytes32[])) private _answers_lists;
+    mapping(uint=>mapping(uint=>bytes32[])) private _answer_lists;
     // block.numberを変える方法がわからないので仮想block.numberを使う
     uint public v_block_num = 0;
 
@@ -180,55 +179,38 @@ contract AccessControlContract is ERC721, Ownable {
     }
 
     function vote(bytes32 encrypted_answer) payable public {
-        require(v_block_num % 300 < 100, "Out of voting period.");
-        uint id = v_block_num / 300;
+        require(v_block_num % event_length < event_length/3, "Out of voting period.");
+        uint event_id = v_block_num / event_length;
         uint group = _groups[_account_peer_id_map[msg.sender]];
-        require(group > 0, "This node is not registered.");
-        require(_is_encrypted_answer_exist[id][group][encrypted_answer] == false);
-        _is_encrypted_answer_exist[id][group][encrypted_answer] = true;
-        require(msg.value != 0 && _deposits[id][group][msg.sender] == 0);
-        _deposits[id][group][msg.sender] = msg.value;
+        require(!encrypted_answer_exists[event_id][group][encrypted_answer], "The same answer already submitted.");
+        require(group > 0, "You aren't registered.");
+        encrypted_answer_exists[event_id][group][encrypted_answer] = true;
+        _deposits[event_id][group][msg.sender] += msg.value;
     }
 
     function disclosure(bytes32 answer, bytes32 key) public {
-        uint id = v_block_num / 300;
+        require(v_block_num % event_length >= event_length/3 && v_block_num % event_length < event_length*2/3, "Out of disclosure period.");
+        uint event_id = v_block_num / event_length;
         uint group = _groups[_account_peer_id_map[msg.sender]];
-        require((v_block_num % 300) >= 100 && (v_block_num % 300) < 200, "Out of disclosure period.");
-        require(_is_encrypted_answer_exist[id][group][keccak256(abi.encode(answer, key))], "invalid answer and key");
-        _answers[id][group][msg.sender] = answer;
-        _answer_counts[id][group][answer] += 1;
-        if (_answer_counts[id][group][answer] == 1) {
-            _answers_lists[id][group].push(answer);
-        }
+        require(encrypted_answer_exists[event_id][group][keccak256(abi.encode(answer, key))], "invalid answer and key");
+        require(_answers[event_id][group][msg.sender] == bytes32(0), "Answer already disclosed.");
+        _answers[event_id][group][msg.sender] = answer;
+        if (++_answer_counts[event_id][group][answer] == 1) _answer_lists[event_id][group].push(answer);
     }
 
     function claim() public {
-        uint id = v_block_num / 300;
+        require((v_block_num % event_length) >= event_length*2/3, "Out of disclosure period.");
+        uint event_id = v_block_num / event_length;
         uint group = _groups[_account_peer_id_map[msg.sender]];
-        require((v_block_num % 300) >= 200 && (v_block_num % 300) < 300, "Out of disclosure period.");
-        uint ma = 0;
-        for (uint i=0; i<_answers_lists[id][group].length; i++) {
-            if (ma < _answer_counts[id][group][_answers_lists[id][group][i]]) {
-                ma = _answer_counts[id][group][_answers_lists[id][group][i]];
-            }
+        bytes32 ans = _answers[event_id][group][msg.sender];
+        uint ans_cnt = _answer_counts[event_id][group][ans];
+        for (uint i=0; i < _answer_lists[event_id][group].length; i++) {
+            bytes32 ans_i = _answer_lists[event_id][group][i];
+            require(ans_i == ans || _answer_counts[event_id][group][ans_i] < ans_cnt, "Your answer is wrong");
         }
-        bytes32 correct = 0;
-        for (uint i=0; i<_answers_lists[id][group].length; i++) {
-            if (ma == _answer_counts[id][group][_answers_lists[id][group][i]]) {
-                require(correct == 0, "No correct answer");
-                correct = _answers_lists[id][group][i];
-            }
-        }
-        require(correct == _answers[id][group][msg.sender], "Your answer is wrong");
-        dbt.mint(msg.sender, _deposits[id][group][msg.sender] * 1000);
-        _deposits[id][group][msg.sender] = 0;
-    }
-
-    // 動作確認用
-    function is_encrypted_answer_exist(uint block_num, bytes32 encrypted_answer, uint group) public view returns (bool) {
-        return _is_encrypted_answer_exist[block_num / 300][group][encrypted_answer];
-    }
-    function get_answer_counts(uint block_num, uint group, bytes32 answer) public view returns (uint) {
-        return _answer_counts[block_num / 300][group][answer];
+        uint deposit = _deposits[event_id][group][msg.sender];
+        _deposits[event_id][group][msg.sender] = 0;
+        payable(msg.sender).transfer(deposit);
+        dbt.mint(msg.sender, deposit * 1000); // reward
     }
 }
