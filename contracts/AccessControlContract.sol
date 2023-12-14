@@ -33,6 +33,7 @@ contract AccessControlContract is ERC721, Ownable {
     string[] private _content_title_list;
     uint256 public registration_fee = 10000;
     uint public event_length = 300;
+    uint public node_number = 40;
     DBookToken dbt;
 
     constructor(string memory name_, string memory symbol_)
@@ -107,13 +108,10 @@ contract AccessControlContract is ERC721, Ownable {
     // 同じpeer_idが存在しないようにしたい
     function registerNode(string memory peer_id) payable public {
         require(_groups[peer_id] == 0, "This peer is already used.");
-        require(msg.value == registration_fee, "Registration fee is required.");
+        // require(msg.value == registration_fee, "Registration fee is required.");
         uint group = next_group();
-        group = next_group();
-        _groupNodeCounter[group] += 1;
+        _groupNodeCounter[group]++;
         _groups[peer_id] = group;
-        require(_peer_id_account_map[peer_id] == address(0));
-        _peer_id_account_map[peer_id] = msg.sender;
         _account_peer_id_map[msg.sender] = peer_id;
     }
 
@@ -122,26 +120,23 @@ contract AccessControlContract is ERC721, Ownable {
         require(_groups[peer_id] == 0, "This peer is already used.");
         _groupNodeCounter[group] += 1;
         _groups[peer_id] = group;
-        require(_peer_id_account_map[peer_id] == address(0));
-        _peer_id_account_map[peer_id] = msg.sender;
         _account_peer_id_map[msg.sender] = peer_id;
     }
 
     function leaveNode() public {
         string memory peer_id = _account_peer_id_map[msg.sender];
         uint group = _groups[peer_id];
-        require(group != 0, "This peer_id is not registered.");
+        require(group != 0, "This peer is not registered.");
         _groups[peer_id] = 0;
-        _groupNodeCounter[group] -= 1;
-        _peer_id_account_map[peer_id] = address(0);
+        _groupNodeCounter[group]--;
         _account_peer_id_map[msg.sender] = "";
         payable(msg.sender).transfer(registration_fee);
     }
 
     function next_group() public view returns (uint) {
-        uint group = 0;
-        uint mi = 1000000007;
-        for (uint i=1; i<=40; i++) {
+        uint group = 1;
+        uint mi = _groupNodeCounter[1];
+        for (uint i=2; i<=node_number; i++) {
             if (mi > _groupNodeCounter[i]) {
                 mi = _groupNodeCounter[i];
                 group = i;
