@@ -1,3 +1,6 @@
+# 使い方
+起動方法は[d-book-repository](https://github.com/Ogtsn99/d-book-repository)で。
+
 # Advanced Sample Hardhat Project
 
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.

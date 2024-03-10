@@ -1,0 +1,242 @@
+[
+  {
+    "group": 31,
+    "seed": 0,
+    "peer_id": "12D3KooWDpJ7As7BWAwRMfu1VU2WCqNjvq387JEYKDBj4kx6nXTN",
+    "private_key": "ab2a81256f9cd501fb589ef40271f076f6d1d73673c52c2a7b5bfcd4941b22e9"
+  },
+  {
+    "group": 21,
+    "seed": 1,
+    "peer_id": "12D3KooWPjceQrSwdWXPyLLeABRXmuqt69Rg3sBYbU1Nft9HyQ6X",
+    "private_key": "6d04e3ebf5103050aa324557b42dc02d2d622af8a182caed2513be30e3d1482b"
+  },
+  {
+    "group": 23,
+    "seed": 2,
+    "peer_id": "12D3KooWH3uVF6wv47WnArKHk5p6cvgCJEb74UTmxztmQDc298L3",
+    "private_key": "b9af2cbced3e84a4aec9f063b5fb630b66fef0f62994f30620080008322f6d1a"
+  },
+  {
+    "group": 28,
+    "seed": 3,
+    "peer_id": "12D3KooWQYhTNQdmr3ArTeUHRYzFg94BKyTkoWBDWez9kSCVe2Xo",
+    "private_key": "f4fab0378268c6705a05baaf95bac3d29371f6922c5a91fdc1bb1e71057d0ccc"
+  },
+  {
+    "group": 29,
+    "seed": 4,
+    "peer_id": "12D3KooWLJtG8fd2hkQzTn96MrLvThmnNQjTUFZwGEsLRz5EmSzc",
+    "private_key": "99bbf6a08a3d5967ab948b645b1be37cd5dfd8e2778fbf806f67357ebe9d5fe5"
+  },
+  {
+    "group": 9,
+    "seed": 5,
+    "peer_id": "12D3KooWSHj3RRbBjD15g6wekV8y3mm57Pobmps2g2WJm6F67Lay",
+    "private_key": "3299876481078dc5bf3129d66f72cff0f6aa7e633ab95c55df87b07c6bc4399a"
+  },
+  {
+    "group": 10,
+    "seed": 6,
+    "peer_id": "12D3KooWDMCQbZZvLgHiHntG1KwcHoqHPAxL37KvhgibWqFtpqUY",
+    "private_key": "2e8346a5a9ae48b9b34cb3544bba4ce7ea857b7cdf6878917945af1d6c95f118"
+  },
+  {
+    "group": 34,
+    "seed": 9,
+    "peer_id": "12D3KooWNRk8VBuTJTYyTbnJC7Nj2UN5jij4dJMo8wtSGT2hRzRP",
+    "private_key": "2074d839a45a04ef09e133c09afdb4ac8f2bcc544ab697c79334fc30dcd2f9e4"
+  },
+  {
+    "group": 18,
+    "seed": 10,
+    "peer_id": "12D3KooWFHNBwTxUgeHRcD3g4ieiXBmZGVyp6TKGWRKKEqYgCC1C",
+    "private_key": "5e6067b930e861256dde74fab332f8f5b8e05a225684a664991ff4aae8dcc5dd"
+  },
+  {
+    "group": 7,
+    "seed": 11,
+    "peer_id": "12D3KooWHbEputWi1fJAxoYgmvvDe3yP7acTACqmXKGYwMgN2daQ",
+    "private_key": "7f19305ebe0d8cbe24b8a56dbd739b5b3d8796e94cced164bde1f9da40096e8a"
+  },
+  {
+    "group": 0,
+    "seed": 12,
+    "peer_id": "12D3KooWCxnyz1JxC9y1RniRQVFe2cLaLHsYNc2SnXbM7yq5JBbJ",
+    "private_key": "ff969b84dcb28980d81d9675b591e7afe7a26ce9c9dc60e21c5db2530c51cc5d"
+  },
+  {
+    "group": 32,
+    "seed": 13,
+    "peer_id": "12D3KooWFNisMCMFB4sxKjQ4VLoTrMYh7fUJqXr1FMwhqAwfdxPS",
+    "private_key": "fab71897c81ce228184be805f5ba5a58f748adc9014158ecf938c291b40c2286"
+  },
+  {
+    "group": 27,
+    "seed": 14,
+    "peer_id": "12D3KooW9ubkfzRCQrUvcgvSqL2Cpri5pPV9DuyoHptvshVcNE9h",
+    "private_key": "d81dceb36be49f5e3cd6e397ba7e1799b13577660d24f885aa772491f3a39485"
+  },
+  {
+    "group": 37,
+    "seed": 15,
+    "peer_id": "12D3KooWRVJCFqFBrasjtcGHnRuuut9fQLsfcUNLfWFFqjMm2p4n",
+    "private_key": "7df439702f21630337a733af33eac4ae5afaed8fd0264ea67c982f79f3a973a2"
+  },
+  {
+    "group": 17,
+    "seed": 17,
+    "peer_id": "12D3KooWGjxVp88DuWx6P6cN5ZLtud51TNWK6a7K1h9cYb8qDuci",
+    "private_key": "dd34e2b3188321aa791d642f4d21e43867b3cfe6083594a39f2c4e77d4b9db4f"
+  },
+  {
+    "group": 19,
+    "seed": 18,
+    "peer_id": "12D3KooWDWC9G1REgGwHTzVNtXL8x6okkRQzsYb7V9mw9UGKhC1H",
+    "private_key": "55eb21f11c098ee35f99ae06770f7f544e577e2f7459206f1f60115b2c7440d4"
+  },
+  {
+    "group": 30,
+    "seed": 19,
+    "peer_id": "12D3KooWE92WS4t4UBFxryqsx78hSaFaZMLaAkRwkynjsL1mdt8h",
+    "private_key": "c86445628d1e0a1ada3ffb6ebf3ddde472d1bdfa5db1ec23a3babce61b7c3b23"
+  },
+  {
+    "group": 15,
+    "seed": 22,
+    "peer_id": "12D3KooWCxkD42pVy9VZXGPQgBmL2ekc9kxME5YwriN3xTN6aBMx",
+    "private_key": "ab4d7788037f33d21be14abd884bac6eaaf8186449a5c655f4f5f6da5f5e6a3b"
+  },
+  {
+    "group": 16,
+    "seed": 27,
+    "peer_id": "12D3KooWNLMpwyVysPSUj93RqpTDMxv5V9AsXc7NPgZPRUg4qD28",
+    "private_key": "02dd145e8f80c97b698a3cb019711d38532e07f6b0d96721dd9c738fb8488515"
+  },
+  {
+    "group": 35,
+    "seed": 28,
+    "peer_id": "12D3KooWJQK2dHWVMKPm9e1RPYgtQeix1hmS84B87rzhCP3uBep1",
+    "private_key": "045255b509139a11449fcc81eeb8493324dde0b62c7b2e1ac1032af97a2b62ea"
+  },
+  {
+    "group": 1,
+    "seed": 29,
+    "peer_id": "12D3KooWP37FF5aY62MjcP5UJr1e3KJyu9cuARGFnFnTEkVdz6eh",
+    "private_key": "4dc38b0b932a928abfc793825b4aaed29ac7abec55eb64a23eedd612cc9b3d5a"
+  },
+  {
+    "group": 13,
+    "seed": 32,
+    "peer_id": "12D3KooWDrAvsiX8hM5yVpDMrPEwSFRfQguLdBCVKgsYbVnqk2P4",
+    "private_key": "2840577a9f341c4e5604f59ce98efba5642c8e4c6642b9bebe10b6daa6d61d32"
+  },
+  {
+    "group": 25,
+    "seed": 37,
+    "peer_id": "12D3KooWKVWTrj63w9fYjPB8g5tGMyXDzaYJXX57gBMpWSc6rJiw",
+    "private_key": "85d943f98a88014a48291dfc91b6e1e30c73423e887b7c59508ad74653adda94"
+  },
+  {
+    "group": 8,
+    "seed": 41,
+    "peer_id": "12D3KooWSahP5pFRCEfaziPEba7urXGeif6T1y8jmodzdFUvzBHj",
+    "private_key": "15eb6d61827b92b3a2f395f0de0a56827be098750067f736b9d734b1d8be3eda"
+  },
+  {
+    "group": 3,
+    "seed": 44,
+    "peer_id": "12D3KooWSY3udBzEcr8m838kxdcAZESH4jAmTvdvMKGgPNiQyJwu",
+    "private_key": "54615cae831f0f60f198fb85ce951c96aa6f56c1dcd9e34119e8d3ee89abcaa8"
+  },
+  {
+    "group": 39,
+    "seed": 47,
+    "peer_id": "12D3KooWEGy5nh4CaFhiqbgvF31XmKwTa54a8XtFJoNz7yEBaBrP",
+    "private_key": "12ec7d4212fec36ca5dd08a958f73456b837123e2e1aeb208a4ae9d39d145c57"
+  },
+  {
+    "group": 36,
+    "seed": 48,
+    "peer_id": "12D3KooWA768LzHMatxkjD1f9DrYW375GZJr6MHPCNEdDtHeTNRt",
+    "private_key": "bdc471f0a533bff21e4b3c610130c1313fbe17df3e1d8fad385b3161bcb848d4"
+  },
+  {
+    "group": 5,
+    "seed": 57,
+    "peer_id": "12D3KooWHj7FJaFfC7ppoN2dnbUN1rfJq7BvSBzGXns5c5uXAhDM",
+    "private_key": "7bb5c528a72f0f3c1db5cc92ff1afcb7083e5e6a4c705cc5d6002b247173e564"
+  },
+  {
+    "group": 2,
+    "seed": 62,
+    "peer_id": "12D3KooWSK6f2ZJLRX8Q3LiuVnj9y3yXqJgFguJh7gdjtsSomnS8",
+    "private_key": "a0b4b6367e1418d837067046ca7d3f76d3add21eec6423843b0e5f1db4562904"
+  },
+  {
+    "group": 24,
+    "seed": 64,
+    "peer_id": "12D3KooWSKcHXUAmp6FLkgJQ2DM1qVLDkeapXcHdUGtoHuLtqfgc",
+    "private_key": "ca01b258d41112393099cfa366940e37b7bed9f52d3b02e7cfe38f67ed8e6a58"
+  },
+  {
+    "group": 6,
+    "seed": 69,
+    "peer_id": "12D3KooWMzg8FK5YW9SSov78gYudoeJxsWy4GbjMg7fA6JKv2X8T",
+    "private_key": "b809cbc72962fc2c717a705b3c8858b116bf8e9b8faa783092fed075444719ee"
+  },
+  {
+    "group": 20,
+    "seed": 71,
+    "peer_id": "12D3KooWF8Bci5R5dm4G7AorZQFUTXBxQh8gbTy479gY574LW5mX",
+    "private_key": "c3d8ddf01d8f89df69831d4c1362355bd3a737dbb58daed9979f7fce374b38e2"
+  },
+  {
+    "group": 4,
+    "seed": 73,
+    "peer_id": "12D3KooWDCk3hNjmEY86FDibddUFKGidKLnGqeBCor63YoCs1Go4",
+    "private_key": "7e887d03cadb5e91ca60ce19282e058a945328300393e8c08d636e0c9416a2d1"
+  },
+  {
+    "group": 22,
+    "seed": 79,
+    "peer_id": "12D3KooWQuUTM5y1XiyYr4Q6grZrpKPG8Cjxd9YiRCJB2maqjjwY",
+    "private_key": "d241922f0236d2687edac69f9d91e2276f05daa7f8c29ce63013e72036569bf3"
+  },
+  {
+    "group": 14,
+    "seed": 91,
+    "peer_id": "12D3KooWPJPXMzQii5zC7hrYXCALWpyuqFGDi2g8MN3236ZFX7ip",
+    "private_key": "4d8d15bc9ac4959c2e46e2c30e0546009b8d2fa395d73f02a895dd0727b89d5e"
+  },
+  {
+    "group": 11,
+    "seed": 102,
+    "peer_id": "12D3KooWMpeKAbMK4BTPsQY3rG7XwtdstseHGcq7kffY8LToYYKK",
+    "private_key": "792f2fb44142d2df2cc7fc2c41c64f5cc96100bd4c0c5f5fcb3bb261feaf5a67"
+  },
+  {
+    "group": 12,
+    "seed": 112,
+    "peer_id": "12D3KooWB5anC4c5aEK4D4XsMsrNgZ12Ro9QvSWQ6k2AShjd6HuE",
+    "private_key": "8cd02bdc96a39d2ae7fba5faad9e83e72676d7b0d68d1d45cb543f0a808263e6"
+  },
+  {
+    "group": 38,
+    "seed": 113,
+    "peer_id": "12D3KooWK3NgKqmSY3W2arBzRGb2giKwuMHHKsN9cJBhndZAp3pS",
+    "private_key": "927e957d7b7d83c066661ee8f07f2a362ee008f84024a093a4edc66a001968e7"
+  },
+  {
+    "group": 33,
+    "seed": 114,
+    "peer_id": "12D3KooWJ3kHPDEawSQC3J8tgJ3ofYcSGABmNKiJpHTxMwQVJCMJ",
+    "private_key": "84dbbce4adb125267dd17f1ee32540158103529dc35dfeac55ea3771e7c689d0"
+  },
+  {
+    "group": 26,
+    "seed": 153,
+    "peer_id": "12D3KooWKTH6d5ZHPbk9s9jcwSuL9cqrQGBYYNd9RuXgPDekGwFg",
+    "private_key": "aa987a29d7ac55052954994a257089f49cd21a27f3e6660b5a04a1d658a29726"
+  }
+]

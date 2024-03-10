@@ -30,7 +30,7 @@ async function main() {
   let [signers1, signers2] = await ethers.getSigners();
   console.log(signers1.address, signers2.address)
   console.log("Access Control Contract deployed to:", acc.address);
-  await acc.connect(signers1).functions.register(1, "sample.txt", "76ea42bc8abb0fc5bfc74ac7a777d35d7a3f0bf1db514c498f3a463b91a59310");
+  // タイトルとマークルルートを事前に登録しておく
   await acc.connect(signers1).functions.register(1, "1MB_Sample", "b90d019c4553c7a4ca5ce226a00c38fb99d2db7d9c9d29b68386d9d3fef8b645");
   await acc.connect(signers1).functions.register(1, "10MB_Sample", "4be1492cb7259e7d9faebdb443583cd962010f4aeaffaea535136a2551955111");
   await acc.connect(signers1).functions.register(1, "100MB_Sample", "88cea1759ac6e2f6bb94cd74cb6cbdf6d928aac6d2d2424da17d51e156d33a79");
